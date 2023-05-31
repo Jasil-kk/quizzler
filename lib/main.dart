@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'quiz_brain.dart';
+
+QuizBrain quizBrain = QuizBrain();
 
 void main() => runApp(const Quizzler());
 
@@ -8,6 +11,7 @@ class Quizzler extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         backgroundColor: Colors.grey.shade900,
@@ -30,22 +34,35 @@ class QuizPage extends StatefulWidget {
 }
 
 class _QuizPageState extends State<QuizPage> {
+  List<Icon> scoreKeeper = [];
+  int questionNumber = 0;
+
+   handleIncrease() {
+    setState(() {
+      questionNumber++;
+      print(questionNumber);
+    });
+}
+
+  
   @override
   Widget build(BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
-        const Expanded(
+         Expanded(
           flex: 5,
           child: Padding(
             padding: EdgeInsets.all(10.0),
             child: Center(
               child: Text(
-                'This is where the question text will go.',
+                quizBrain.questionBank[questionNumber].questionText,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 25.0,
+                  fontFamily: 'Rubik',
+                  fontWeight: FontWeight.w500,
                   color: Colors.white,
                 ),
               ),
@@ -55,17 +72,26 @@ class _QuizPageState extends State<QuizPage> {
         Expanded(
           child: Padding(
             padding: const EdgeInsets.all(15.0),
-            child:
-              TextButton(
-                style: TextButton.styleFrom(
-                  textStyle: const TextStyle(color: Colors.white),
-                  backgroundColor: Colors.green,
-                ),
+            child: TextButton(
+              style: TextButton.styleFrom(
+                textStyle: const TextStyle(color: Colors.white),
+                backgroundColor: Colors.green,
+              ),
               child: const Text(
                 'True',
-                style: TextStyle(color: Colors.white, backgroundColor: Colors.transparent,fontSize: 20.0),
+                style: TextStyle(
+                    color: Colors.white,
+                    backgroundColor: Colors.transparent,
+                    fontSize: 20.0),
               ),
               onPressed: () {
+                handleIncrease();
+                bool correctedAnswer = quizBrain.questionBank[questionNumber].questionAnswer;
+                if(correctedAnswer == false) {
+                  print('user got it right!');
+                }else{
+                  print('user got it wrong');
+                }
                 //The user picked true.
               },
             ),
@@ -73,23 +99,32 @@ class _QuizPageState extends State<QuizPage> {
         ),
         Expanded(
           child: Padding(
-            padding: const EdgeInsets.all(15.0),
-            child:               TextButton(
-              style: TextButton.styleFrom(
-                textStyle: const TextStyle(color: Colors.white),
-                backgroundColor: Colors.red,
-              ),
-              child: const Text(
-                'False',
-                style: TextStyle(color: Colors.white, backgroundColor: Colors.transparent,fontSize: 20.0),
-              ),
-              onPressed: () {
-                //The user picked true.
-              },
-            )
-          ),
+              padding: const EdgeInsets.all(15.0),
+              child: TextButton(
+                style: TextButton.styleFrom(
+                  textStyle: const TextStyle(color: Colors.white),
+                  backgroundColor: Colors.red,
+                ),
+                child: const Text(
+                  'False',
+                  style: TextStyle(
+                      color: Colors.white,
+                      backgroundColor: Colors.transparent,
+                      fontSize: 20.0),
+                ),
+                onPressed: () {
+                  handleIncrease();
+                  bool correctedAnswer = quizBrain.questionBank[questionNumber].questionAnswer;
+                  //The user picked true.
+                },
+              )),
         ),
-        //TODO: Add a Row here as your score keeper
+        // Row(children: scoreKeeper,)
+        Row(
+          children: scoreKeeper
+              .map((icon) => Icon(icon.icon, color: icon.color))
+              .toList(),
+        )
       ],
     );
   }
