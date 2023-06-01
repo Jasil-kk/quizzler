@@ -11,7 +11,6 @@ class Quizzler extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         backgroundColor: Colors.grey.shade900,
@@ -35,29 +34,31 @@ class QuizPage extends StatefulWidget {
 
 class _QuizPageState extends State<QuizPage> {
   List<Icon> scoreKeeper = [];
-  int questionNumber = 0;
-
-   handleIncrease() {
+  void checkAnswer(userPickedAnswer) {
+    bool correctedAnswer = quizBrain.getCorrectAnswer();
+    if (userPickedAnswer == correctedAnswer) {
+      print('user got it right!');
+    } else {
+      print('user got it wrong');
+    }
     setState(() {
-      questionNumber++;
-      print(questionNumber);
+      quizBrain.nextQuestion();
     });
-}
+  }
 
-  
   @override
   Widget build(BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
-         Expanded(
+        Expanded(
           flex: 5,
           child: Padding(
             padding: EdgeInsets.all(10.0),
             child: Center(
               child: Text(
-                quizBrain.questionBank[questionNumber].questionText,
+                quizBrain.getQuestionText(),
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 25.0,
@@ -85,13 +86,7 @@ class _QuizPageState extends State<QuizPage> {
                     fontSize: 20.0),
               ),
               onPressed: () {
-                handleIncrease();
-                bool correctedAnswer = quizBrain.questionBank[questionNumber].questionAnswer;
-                if(correctedAnswer == false) {
-                  print('user got it right!');
-                }else{
-                  print('user got it wrong');
-                }
+                checkAnswer(true);
                 //The user picked true.
               },
             ),
@@ -113,8 +108,7 @@ class _QuizPageState extends State<QuizPage> {
                       fontSize: 20.0),
                 ),
                 onPressed: () {
-                  handleIncrease();
-                  bool correctedAnswer = quizBrain.questionBank[questionNumber].questionAnswer;
+                  checkAnswer(false);
                   //The user picked true.
                 },
               )),
