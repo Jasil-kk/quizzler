@@ -1,4 +1,9 @@
+import 'package:quizzler/main.dart';
+
 import 'question.dart';
+import 'package:flutter/material.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
+
 
 class QuizBrain {
 
@@ -6,7 +11,7 @@ class QuizBrain {
 
   List<Question> _questionBank = [
 
-  Question('You can lead a cow down stairs but not up stairs.', false),
+    Question('You can lead a cow down stairs but not up stairs.', false),
     Question('Approximately one quarter of human bones are in the feet.', true),
     Question('A slug\'s blood is green.', true),
     Question('The Great Wall of China is visible from space.', false),
@@ -50,7 +55,8 @@ class QuizBrain {
     // Question('The chemical symbol for the element oxygen is "O".', true),
     // Question('Koalas are bears.', false),
     // Question('The country with the most population is China.', true),
-    // Question('The sport of basketball was invented in the United States.', true),
+    // Question(
+    //     'The sport of basketball was invented in the United States.', true),
     // Question('Octopuses have three hearts.', true),
     // Question('The moon is made of cheese.', false),
     // Question('The national bird of Australia is the emu.', false),
@@ -59,16 +65,47 @@ class QuizBrain {
     // Question('The currency of Brazil is the real.', true),
   ];
 
-  void nextQuestion () {
-    if(_questionNumber < _questionBank.length - 1) {
+  void nextQuestion() {
+    if (_questionNumber < _questionBank.length - 1) {
       _questionNumber++;
     }
   }
 
-  String getQuestionText () {
+  String getQuestionText() {
     return _questionBank[_questionNumber].questionText;
   }
-  bool getCorrectAnswer () {
+
+  bool getCorrectAnswer() {
     return _questionBank[_questionNumber].questionAnswer;
+  }
+  void resetQuiz(scoreKeeper) {
+    _questionNumber = 0;
+    scoreKeeper=[];
+  }
+  bool isLastQuestion() {
+    return _questionNumber >= _questionBank.length - 1;
+  }
+
+  void finalQuestion(BuildContext context, scoreKeeper) {
+    if (_questionNumber >= _questionBank.length - 1 ) {
+      Alert(
+        context: context,
+        title: "Quiz Finished",
+        desc: "You have answered all the questions.",
+        buttons: [
+          DialogButton(
+            child: Text(
+              "OK",
+              style: TextStyle(color: Colors.white, fontSize: 20),
+            ),
+            onPressed: () {
+              resetQuiz(scoreKeeper); // Reset the quiz
+              Navigator.pop(context);
+            },
+            color: Colors.blue,
+          ),
+        ],
+      ).show();
+    }
   }
 }
